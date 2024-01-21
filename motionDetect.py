@@ -1,3 +1,4 @@
+import sys
 import cv2
 import numpy as np
 import subprocess
@@ -80,12 +81,12 @@ def detect_motion(prev_frame, curr_frame, threshold=200, min_contour_area=200):
     return False
 
 def main():
-    rtsp_url = "rtsp://admin:admin@172.172.172.30/11"
+    rtsp_url = sys.argv[1] #"rtsp://admin:admin@172.172.172.30/11"
     cap = cv2.VideoCapture(rtsp_url)
     consistent_count = 0
     threshold_consistency = 1  # Number of consecutive frames to confirm detection
 
-    frame_skip = 9  # Skip every N frames
+    frame_skip = 6  # Skip every N frames
     frame_count = 0
 
     if not cap.isOpened():
