@@ -18,8 +18,13 @@ def record_video(rtsp_url, duration=30):
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     filename = f"{timestamp}.mkv"
 
+    # Increase analyzeduration and probesize
+    analyzeduration = "10000000"  # 10 seconds, in microseconds
+    probesize = "5000000"  # 5 MB
+
     # Command to use FFmpeg to record video from RTSP stream
-    command = ['ffmpeg', '-i', rtsp_url, '-t', str(duration), '-acodec', 'copy', '-vcodec', 'copy', '-r', '1', filename]
+    command = ['ffmpeg', '-analyzeduration', analyzeduration, '-probesize', probesize, 
+               '-i', rtsp_url, '-t', str(duration), '-acodec', 'copy', '-vcodec', 'copy', filename]
     subprocess.run(command)
 
 def main():
@@ -53,11 +58,11 @@ def main():
         prev_frame = gray
         #cv2.imshow("Frame", frame)
 
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
+        #if cv2.waitKey(1) & 0xFF == ord('q'):
+        #    break
 
     cap.release()
-    cv2.destroyAllWindows()
+    #cv2.destroyAllWindows()
 
 if __name__ == "__main__":
     main()
