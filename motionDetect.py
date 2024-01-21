@@ -3,15 +3,19 @@ import numpy as np
 import subprocess
 from datetime import datetime
 
-def detect_motion(prev_frame, curr_frame, threshold=50):
-
-    # Assuming prev_frame and curr_frame are already in grayscale
+def detect_motion(prev_frame, curr_frame, threshold=200, min_contour_area=200):
+    # Calculate the absolute difference between current frame and the previous frame
     diff = cv2.absdiff(prev_frame, curr_frame)
     blur = cv2.GaussianBlur(diff, (5, 5), 0)
     _, thresh = cv2.threshold(blur, threshold, 255, cv2.THRESH_BINARY)
     dilated = cv2.dilate(thresh, None, iterations=3)
     contours, _ = cv2.findContours(dilated, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    return len(contours) > 0
+
+    # Check if any substantial contours are found
+    for contour in contours:
+        if cv2.contourArea(contour) > min_contour_area:
+            return True
+    return False
 
 def record_video(rtsp_url, duration=30):
     # Get current timestamp
@@ -52,8 +56,8 @@ def main():
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         if detect_motion(prev_frame, gray):
             print("Motion detected! Recording...")
-            record_video(rtsp_url, 30)  # Record for 30 seconds
-            break
+            #record_video(rtsp_url, 30)  # Record for 30 seconds
+            #break
 
         prev_frame = gray
         #cv2.imshow("Frame", frame)
