@@ -84,7 +84,7 @@ def main():
     rtsp_url = "rtsp://admin:admin@172.172.172.30/1"
     cap = cv2.VideoCapture(rtsp_url)
     consistent_count = 0
-    threshold_consistency = 6  # Number of consecutive frames to confirm detection
+    threshold_consistency = 3  # Number of consecutive frames to confirm detection
 
     if not cap.isOpened():
         print("Error: Unable to open video stream.")
@@ -94,7 +94,8 @@ def main():
         ret, frame = cap.read()
         if not ret:
             print("Warning: Unable to read video frame.")
-            continue
+            #continue
+            break
 
         #detected, processed_frame = detect_humanoid_motion(frame, body_cascade)
         detected, processed_frame = detect_human_yolo(frame)
