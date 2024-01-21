@@ -80,11 +80,13 @@ def detect_motion(prev_frame, curr_frame, threshold=200, min_contour_area=200):
     return False
 
 def main():
-    # Replace with your RTSP stream URL
-    rtsp_url = "rtsp://admin:admin@172.172.172.30/1"
+    rtsp_url = "rtsp://admin:admin@172.172.172.30/11"
     cap = cv2.VideoCapture(rtsp_url)
     consistent_count = 0
-    threshold_consistency = 3  # Number of consecutive frames to confirm detection
+    threshold_consistency = 1  # Number of consecutive frames to confirm detection
+
+    frame_skip = 9  # Skip every N frames
+    frame_count = 0
 
     if not cap.isOpened():
         print("Error: Unable to open video stream.")
@@ -97,6 +99,10 @@ def main():
             #continue
             break
 
+        frame_count += 1
+        if frame_count % frame_skip != 0:
+            continue  # Skip this frame
+        
         #detected, processed_frame = detect_humanoid_motion(frame, body_cascade)
         detected, processed_frame = detect_human_yolo(frame)
         if detected:
