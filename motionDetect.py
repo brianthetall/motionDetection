@@ -3,6 +3,12 @@ import numpy as np
 import subprocess
 from datetime import datetime
 
+def save_frame(frame):
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    filename = f"frame_{timestamp}.jpg"
+    cv2.imwrite(filename, frame)
+    print(f"Frame saved as {filename}")
+
 def detect_motion(prev_frame, curr_frame, threshold=200, min_contour_area=200):
     # Calculate the absolute difference between current frame and the previous frame
     diff = cv2.absdiff(prev_frame, curr_frame)
@@ -16,20 +22,6 @@ def detect_motion(prev_frame, curr_frame, threshold=200, min_contour_area=200):
         if cv2.contourArea(contour) > min_contour_area:
             return True
     return False
-
-def record_video(rtsp_url, duration=30):
-    # Get current timestamp
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    filename = f"{timestamp}.mkv"
-
-    # Increase analyzeduration and probesize
-    analyzeduration = "10000000"  # 10 seconds, in microseconds
-    probesize = "5000000"  # 5 MB
-
-    # Command to use FFmpeg to record video from RTSP stream
-    command = ['ffmpeg', '-analyzeduration', analyzeduration, '-probesize', probesize, 
-               '-i', rtsp_url, '-t', str(duration), '-acodec', 'copy', '-vcodec', 'copy', filename]
-    subprocess.run(command)
 
 def main():
     # Replace with your RTSP stream URL
@@ -56,17 +48,11 @@ def main():
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         if detect_motion(prev_frame, gray):
             print("Motion detected! Recording...")
-            #record_video(rtsp_url, 30)  # Record for 30 seconds
-            #break
+            save_frame(frame)
 
         prev_frame = gray
-        #cv2.imshow("Frame", frame)
-
-        #if cv2.waitKey(1) & 0xFF == ord('q'):
-        #    break
 
     cap.release()
-    #cv2.destroyAllWindows()
 
 if __name__ == "__main__":
     main()
