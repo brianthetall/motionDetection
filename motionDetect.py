@@ -15,7 +15,7 @@ def get_output_layers(net):
     return [layer_names[i - 1] for i in out_layers_indices]
 
 # Load YOLO
-net = cv2.dnn.readNet("yolov3.weights", "yolov3.cfg")
+net = cv2.dnn.readNet("/home/user/motionDetection/yolov3.weights", "/home/user/motionDetection/yolov3.cfg")
 output_layers = get_output_layers(net)
 
 def detect_human_yolo(frame):
@@ -61,7 +61,7 @@ def detect_humanoid_motion(frame, body_cascade, min_size=(50,200)):
 
 def save_frame(frame):
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    filename = f"frame_{timestamp}.jpg"
+    filename = f"/home/user/motionDetection/frame_{timestamp}.jpg"
     cv2.imwrite(filename, frame)
     print(f"Frame saved as {filename}")
 
